@@ -1,0 +1,32 @@
+#cloud-config
+users:
+  - name: #USER
+	groups: sudo
+	sudo: ALL=(ALL) NOPASSWD:ALL
+	shell: /bin/bash
+	ssh_authorized_keys:
+	  - # Your full public SSH key here.
+packages:
+  - fail2ban
+  - ufw
+  - curl  
+  - wget  
+  - ca-certificates  
+  - git  
+  - vim
+  - htop  
+  - jq  
+  - socat  
+  - iptables    
+package_update: true
+package_upgrade: true
+write_files:
+  - path: /etc/ssh/sshd_config.d/99-hardening.conf
+	content: |    
+    # Your custom SSH hardening settings
+runcmd:
+  - systemctl restart sshd  
+  - reboot
+  - ufw --force allow 2222/tcp comment 'SSH'
+  - ufw --force enable
+  - reboot  
